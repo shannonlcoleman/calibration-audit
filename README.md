@@ -8,7 +8,7 @@ Built as a companion to [A Practical AI Evaluation Framework for Consumer Produc
 
 ## The problem this solves
 
-Most AI product teams never check whether their model's expressed confidence actually correlates with its accuracy. A model that presents itself as 90% confident should be right around 90% of the time. Most are not. This is calibration failure, and it is one of the most consequential gaps in consumer AI evaluation because users adjust their trust and behavior based on how confident the model appears.
+Many AI product teams never check whether their model's expressed confidence correlates with its accuracy. A model that claims 90% confidence should be right around 90% of the time, but most are not. The gap between stated confidence and actual accuracy is calibration failure, and it matters because people generally trust a model based on how confident it sounds, not on how often it’s right.
 
 This tool takes a CSV of model outputs with confidence scores and ground truth labels, buckets them by confidence range, and shows you exactly where the model is overconfident, underconfident, or well calibrated.
 
