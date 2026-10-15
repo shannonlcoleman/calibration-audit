@@ -87,14 +87,27 @@ def print_report(results):
 
     print("=" * 65)
 
-    all_gaps = [r["gap"] for r in results]
-    avg_gap = sum(all_gaps) / len(all_gaps)
-    overall_status = interpret_gap(avg_gap)
-    print(f"\nOverall calibration gap: {avg_gap:.3f} ({overall_status})")
+    # Weight each range by how many outputs fell in it. Absolute gaps keep
+    # overconfident and underconfident ranges from cancelling each other out.
+    total = sum(r["count"] for r in results)
+    ece = sum(r["count"] * abs(r["gap"]) for r in results) / total
+    signed = sum(r["count"] * r["gap"] for r in results) / total
+    if ece <= 0.1:
+        overall_status = "WELL CALIBRATED"
+    elif signed > 0:
+        overall_status = "MISCALIBRATED, MOSTLY OVERCONFIDENT"
+    else:
+        overall_status = "MISCALIBRATED, MOSTLY UNDERCONFIDENT"
+    print(f"\nExpected calibration error: {ece:.3f} ({overall_status})")
+    print(f"Weighted average gap: {signed:+.3f}")
+    thin = [r for r in results if r["count"] < 5]
+    if thin:
+        print(f"Note: {len(thin)} range(s) have fewer than 5 outputs, so treat their status as rough.")
     print("\nInterpretation:")
     print("  Positive gap = model is more confident than it is accurate (overconfident)")
     print("  Negative gap = model is less confident than it is accurate (underconfident)")
     print("  Gap near 0   = model confidence tracks actual accuracy (well calibrated)")
+    print("  Expected calibration error = the average size of the gap, weighted by how many outputs are in each range")
     print("=" * 65 + "\n")
 
 

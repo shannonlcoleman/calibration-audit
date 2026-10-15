@@ -1,49 +1,49 @@
 # calibration-audit
 
-A command-line tool for measuring confidence calibration in AI model outputs.
+A command-line tool that checks whether an AI model's stated confidence matches how often it's right.
 
-Built as a companion to [A Practical AI Evaluation Framework for Consumer Products](https://byshannoncoleman.substack.com/p/a-practical-ai-evaluation-framework), published in Ground Truth.
+I built it as a companion to [A Practical AI Evaluation Framework for Consumer Products](https://byshannoncoleman.substack.com/p/a-practical-ai-evaluation-framework), from my Substack, Ground Truth.
 
----
+## Why it exists
 
-## The problem this solves
+A model that says it's 90% confident should be right about 90% of the time. Plenty of teams never check. That matters because people decide how much to trust an answer based on how sure it sounds, so a model that sounds confident and isn't accurate pushes them toward the wrong call.
 
-Many AI product teams never check whether their model's expressed confidence correlates with its accuracy. A model that claims 90% confidence should be right around 90% of the time, but most are not. The gap between stated confidence and actual accuracy is calibration failure, and it matters because people generally trust a model based on how confident it sounds, not on how often it’s right.
-
-This tool takes a CSV of model outputs with confidence scores and ground truth labels, buckets them by confidence range, and shows you exactly where the model is overconfident, underconfident, or well calibrated.
-
----
+The tool sorts a model's outputs into ranges by confidence and compares the average confidence in each range with the share of outputs that were actually correct.
 
 ## Usage
+
+```
 python calibration_audit.py your_data.csv
+```
 
-Your CSV file needs two columns:
+The CSV needs two columns:
 
-- `confidence`: a float between 0 and 1 representing the model's expressed confidence
-- `correct`: 1 if the output was correct, 0 if not
+- `confidence`: the model's stated confidence, from 0 to 1
+- `correct`: 1 if the output was right, 0 if it wasn't
 
-A sample data file is included to test the tool.
+`sample_data.csv` is included if you want to try it first.
 
----
+## What you get
 
-## Output
+For each confidence range (0.0 to 0.1, 0.1 to 0.2, and so on), the report shows:
 
-The tool prints a calibration report showing for each confidence bucket:
+- how many outputs fell in that range
+- their average confidence
+- how many of them were correct
+- the gap between the two
+- a label: OVERCONFIDENT, UNDERCONFIDENT, or WELL CALIBRATED (a gap within 0.1)
 
-- how many predictions fell in that range
-- the average confidence score
-- the actual accuracy rate
-- the gap between confidence and accuracy
-- a plain language status: OVERCONFIDENT, UNDERCONFIDENT, or WELL CALIBRATED
+Below the table, it gives two summary numbers:
 
----
+- **Expected calibration error.** The average size of the gap, weighted by how many outputs are in each range. Gaps in either direction count, so an overconfident range can't hide behind an underconfident one.
+- **Weighted average gap.** Which direction the model leans. Positive means overconfident, and negative means underconfident.
+
+It also flags ranges with fewer than five outputs, since one or two answers can swing their accuracy a lot.
+
+On the sample data, the model is right only 55% of the time when it claims 90% to 100% confidence. The expected calibration error is 0.278, mostly overconfident.
 
 ## Background
 
-Calibration is Layer 1 of a four-layer evaluation framework for consumer AI products. The full framework covers output quality, decision quality, trust infrastructure, and failure mode monitoring.
+Calibration is Layer 1 of a four-layer evaluation framework for consumer AI products. The full framework covers output quality, decision quality, trust infrastructure, and failure mode monitoring, and it's on [Ground Truth](https://byshannoncoleman.substack.com).
 
-Full framework: [byshannoncoleman.substack.com](https://byshannoncoleman.substack.com)
-
----
-
-Built by [Shannon Coleman, PhD](https://shannonlcoleman.com) | Experience Research and Strategy Leader
+Built by [Shannon L. Coleman, PhD](https://shannonlcoleman.com), Principal Mixed Methods Researcher and Strategist
