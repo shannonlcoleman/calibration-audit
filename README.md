@@ -6,9 +6,9 @@ I built it as a companion to [A Practical AI Evaluation Framework for Consumer P
 
 ## Why it exists
 
-A model that says it's 90% confident should be right about 90% of the time. Plenty of teams never check. That matters because people decide how much to trust an answer based on how sure it sounds, so a model that sounds confident and isn't accurate pushes them toward the wrong call.
+A model that says it's 90% confident should be right about 90% of the time. Plenty of teams never check this, though. That matters because people decide how much to trust an answer based on how sure it sounds, so a model that sounds confident and isn't accurate pushes them toward the wrong call.
 
-The tool sorts a model's outputs into ranges by confidence and compares the average confidence in each range with the share of outputs that were actually correct.
+This tool sorts a model's outputs into ranges by confidence and compares the average confidence in each range with the share of outputs that actually were correct.
 
 ## Usage
 
