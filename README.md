@@ -12,6 +12,8 @@ This tool sorts a model's outputs into ranges by confidence and compares the ave
 
 ## Usage
 
+Requires Python 3. No other packages needed.
+
 ```
 python calibration_audit.py your_data.csv
 ```
@@ -40,6 +42,27 @@ Below the table, it gives two summary numbers:
 
 It also flags ranges with fewer than five outputs, since one or two answers can swing their accuracy a lot.
 
+## Example output
+
+```
+Confidence Range     Count    Avg Conf     Accuracy     Gap        Status
+-----------------------------------------------------------------
+0.0 - 0.1            1        0.050        0.000        0.050      WELL CALIBRATED
+0.1 - 0.2            2        0.125        0.500        -0.375     UNDERCONFIDENT
+0.2 - 0.3            2        0.225        0.500        -0.275     UNDERCONFIDENT
+0.3 - 0.4            3        0.343        0.667        -0.323     UNDERCONFIDENT
+0.4 - 0.5            2        0.425        0.500        -0.075     WELL CALIBRATED
+0.5 - 0.6            2        0.525        0.500        0.025      WELL CALIBRATED
+0.6 - 0.7            3        0.643        0.333        0.310      OVERCONFIDENT
+0.7 - 0.8            4        0.738        0.500        0.238      OVERCONFIDENT
+0.8 - 0.9            10       0.857        0.600        0.257      OVERCONFIDENT
+0.9 - 1.0            11       0.923        0.545        0.377      OVERCONFIDENT
+
+Expected calibration error: 0.278 (MISCALIBRATED, MOSTLY OVERCONFIDENT)
+Weighted average gap: +0.157
+Note: 8 range(s) have fewer than 5 outputs, so treat their status as rough.
+```
+
 On the sample data, the model is right only 55% of the time when it claims 90% to 100% confidence. The expected calibration error is 0.278, mostly overconfident.
 
 ## Background
@@ -47,3 +70,7 @@ On the sample data, the model is right only 55% of the time when it claims 90% t
 Calibration is Layer 1 of a four-layer evaluation framework for consumer AI products. The full framework covers output quality, decision quality, trust infrastructure, and failure mode monitoring, and it's on [Ground Truth](https://byshannoncoleman.substack.com).
 
 Built by [Shannon L. Coleman, PhD](https://shannonlcoleman.com), Principal Mixed Methods Researcher and Strategist
+
+## License
+
+MIT. See LICENSE.
