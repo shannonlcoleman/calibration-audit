@@ -65,6 +65,27 @@ Note: 8 range(s) have fewer than 5 outputs, so treat their status as rough.
 
 On the sample data, the model is right only 55% of the time when it claims 90% to 100% confidence. The expected calibration error is 0.278, mostly overconfident.
 
+## Real-data example: base vs. instruction-tuned model
+
+I ran the audit on Qwen2.5-7B and Qwen2.5-7B-Instruct, using each model's per-question MMLU-Pro results from the [Open LLM Leaderboard](https://huggingface.co/open-llm-leaderboard) (12,032 questions per model). `mmlu_pro_to_csv.py` converts those results into the two columns this tool reads. The model gives each answer option a probability, and its level of confidence is the probability of the answer it chose.
+
+| | Base | Instruct |
+|---|---|---|
+| Accuracy | 43.7% | 42.9% |
+| Expected calibration error | 0.061 | 0.454 |
+| Answers at 90%+ confidence | 1,442 (93% correct) | 7,921 (53% correct) |
+
+The two models are about equally accurate, yet instruction tuning made the model far more confident without making it right more often. When the base model claims 90% or higher, it's right 93% of the time. When the instruct model does, it's right about half the time.
+
+A few limits: this covers one model family and one benchmark, and confidence here is the model's probability over the answer options, not a confidence it states in words. Post-training has been reported to hurt calibration before, so this is an independent check of a known effect.
+
+To reproduce:
+
+```
+python mmlu_pro_to_csv.py samples_leaderboard_mmlu_pro_<timestamp>.jsonl qwen_base.csv
+python calibration_audit.py qwen_base.csv
+```
+
 ## Background
 
 Calibration is Layer 1 of a four-layer evaluation framework for consumer AI products. The full framework covers output quality, decision quality, trust infrastructure, and failure mode monitoring, and it's on [Ground Truth](https://byshannoncoleman.substack.com).
