@@ -2,6 +2,8 @@
 
 A command-line tool that checks whether an AI model's stated confidence matches how often it's right.
 
+**Try it in your browser:** [Calibration Audit on Hugging Face](https://huggingface.co/spaces/shannonlcoleman/calibration-audit), no install needed.
+
 I built it as a companion to [A Practical AI Evaluation Framework for Consumer Products](https://byshannoncoleman.substack.com/p/a-practical-ai-evaluation-framework), from my Substack, Ground Truth.
 
 ## Why it exists
